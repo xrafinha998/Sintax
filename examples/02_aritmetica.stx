@@ -1,0 +1,25 @@
+# 02 — Aritmética e operadores
+a = 10
+b = 3
+
+print "=== Aritmética ==="
+print "Soma:        {a} + {b} = " + texto(a + b)
+print "Subtração:   {a} - {b} = " + texto(a - b)
+print "Mult:        {a} * {b} = " + texto(a * b)
+print "Divisão:     {a} / {b} = " + texto(a / b)
+print "Div inteira: {a} // {b} = " + texto(a // b)
+print "Módulo:      {a} % {b} = " + texto(a % b)
+print "Potência:    {a} ** {b} = " + texto(a ** b)
+
+# Precedência correta
+r1 = 2 + 3 * 4
+r2 = (2 + 3) * 4
+print "\n2 + 3 * 4     = {r1}"
+print "(2 + 3) * 4   = {r2}"
+
+# Atribuição composta
+x = 100
+x += 20
+x -= 5
+x *= 2
+print "\nx final = {x}"

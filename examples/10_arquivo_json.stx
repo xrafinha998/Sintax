@@ -1,0 +1,42 @@
+# 10 — Arquivo e JSON
+
+import arquivo
+import json
+
+# Criar e escrever arquivo
+arquivo.escrever("teste.txt", "Linha 1\nLinha 2\nLinha 3\n")
+print "Arquivo criado!"
+
+# Ler arquivo completo
+conteudo = arquivo.ler("teste.txt")
+print "Conteúdo:\n" + conteudo
+
+# Ler linha por linha
+linhas = arquivo.linhas("teste.txt")
+print "Linhas: " + texto(len(linhas))
+para par em enumerar(linhas) {
+    print "  [{par[0]}] {par[1]}"
+}
+
+# JSON — salvar objeto
+dados = {
+    "nome":    "Sintax",
+    "versao":  "4.0",
+    "features": ["listas", "dicionários", "funções", "módulos"]
+}
+
+json.salvar("dados.json", dados)
+print "\nJSON salvo!"
+
+# Ler JSON
+carregado = json.carregar("dados.json")
+print "Nome: " + carregado["nome"]
+print "Versão: " + carregado["versao"]
+feats = carregado['features']
+print "Features: {feats}"
+
+# Limpar arquivos de teste
+import os
+os.remover("teste.txt")
+os.remover("dados.json")
+print "\nArquivos removidos."

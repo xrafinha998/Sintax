@@ -1,0 +1,17 @@
+# 01 — Básico: variáveis, print, tipos
+nome   = "Ana"
+idade  = 25
+altura = 1.68
+ativo  = true
+nada   = nulo
+
+print "=== Dados ==="
+print "Nome:   " + nome
+print "Idade:  " + texto(idade)
+print "Altura: " + texto(altura)
+print "Ativo:  " + texto(ativo)
+print "Nada:   " + texto(nada)
+
+# Interpolação de string com {}
+print "Olá, {nome}! Você tem {idade} anos."
+print "Sua altura é {altura}m."

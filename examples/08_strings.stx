@@ -1,0 +1,37 @@
+# 08 — Strings
+
+frase = "  Olá, Mundo!  "
+
+print "Original:  '{frase}'"
+print "Maiúsculo: '" + frase.maiusculo() + "'"
+print "Minúsculo: '" + frase.minusculo() + "'"
+print "Strip:     '" + frase.strip() + "'"
+print "Tamanho:   " + texto(frase.tamanho)
+print "Contém 'Mundo': " + texto(frase.contem("Mundo"))
+
+# Substituir
+nova = frase.substituir("Mundo", "Sintax")
+print "Substituído: '{nova}'"
+
+# Dividir
+csv = "maçã,banana,laranja,uva"
+frutas = csv.dividir(",")
+print "\nFrutas: {frutas}"
+print "Total: " + texto(len(frutas))
+
+# Verificação
+para fruta em frutas {
+    se fruta.começa_com("b") {
+        print "{fruta} começa com 'b'"
+    }
+}
+
+# Conversão
+num_str = "42"
+num_int = int(num_str)
+print "\nDobro de '{num_str}' = " + texto(num_int * 2)
+
+# Interpolação avançada
+x = 10
+y = 20
+print "Soma de {x} + {y} = {x + y}"

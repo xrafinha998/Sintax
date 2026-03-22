@@ -1,0 +1,53 @@
+# 06 — Listas
+
+nums = [10, 30, 20, 50, 40]
+
+print "Lista: {nums}"
+print "Tamanho: " + texto(len(nums))
+print "Primeiro: " + texto(nums[0])
+print "Último: " + texto(nums[len(nums) - 1])
+
+# Modificar
+nums[2] = 99
+print "Após modificar [2]: {nums}"
+
+# Métodos
+nums.adicionar(77)
+print "Após adicionar 77: {nums}"
+nums.remover(10)
+print "Após remover 10: {nums}"
+
+ord = ordenar(nums)
+print "Ordenado: {ord}"
+inv = inverter(ord)
+print "Invertido: {inv}"
+
+# Iterar
+print "\nPercorrendo:"
+para v em nums {
+    se v > 40 {
+        print "  > {v}"
+    }
+}
+
+# Compreensão manual
+quadrados = []
+para i de 1 ate 6 {
+    quadrados.adicionar(i * i)
+}
+print "\nQuadrados: {quadrados}"
+
+# Enumerar
+print "\nCom índice:"
+para par em enumerar(nums) {
+    print "  [{par[0]}] = {par[1]}"
+}
+
+# Filter e map com funções
+func par(n) { return n % 2 == 0 }
+func dobro(n) { return n * 2 }
+
+pares  = filtrar(par, nums)
+dobros = mapear(dobro, nums)
+print "\nPares: {pares}"
+print "Dobros: {dobros}"

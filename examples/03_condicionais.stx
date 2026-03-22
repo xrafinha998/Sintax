@@ -1,0 +1,28 @@
+# 03 — Condicionais
+nota = 72
+
+se nota >= 90 {
+    print "Conceito A"
+} senao se nota >= 70 {
+    print "Conceito B"
+} senao se nota >= 50 {
+    print "Recuperação"
+} senao {
+    print "Reprovado"
+}
+
+# Lógico
+idade = 20
+cnh   = true
+
+se idade >= 18 e cnh {
+    print "Pode dirigir!"
+} senao {
+    print "Não pode dirigir"
+}
+
+# Operador nao
+logado = false
+se nao logado {
+    print "Por favor, faça login"
+}

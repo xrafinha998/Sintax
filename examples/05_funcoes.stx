@@ -1,0 +1,55 @@
+# 05 — Funções
+
+# Função simples
+func cumprimentar(nome) {
+    print "Olá, {nome}!"
+}
+
+# Com retorno
+func somar(a, b) {
+    return a + b
+}
+
+# Com valor padrão
+func potencia(base, exp = 2) {
+    return base ** exp
+}
+
+# Recursão — fatorial
+func fatorial(n) {
+    se n <= 1 { return 1 }
+    return n * fatorial(n - 1)
+}
+
+# Recursão — fibonacci
+func fib(n) {
+    se n <= 1 { return n }
+    return fib(n - 1) + fib(n - 2)
+}
+
+# Closure — função que retorna função
+func somador(x) {
+    func inner(y) {
+        return x + y
+    }
+    return inner
+}
+
+# ── Testes ────────────────────────────────────────────
+cumprimentar("Carlos")
+
+r = somar(15, 27)
+print "15 + 27 = {r}"
+
+print "3 ** 4 = " + texto(potencia(3, 4))
+print "7 ** 2 = " + texto(potencia(7))
+
+print "10! = " + texto(fatorial(10))
+
+para i de 0 ate 8 {
+    print "fib({i}) = " + texto(fib(i))
+}
+
+soma5 = somador(5)
+print "soma5(3) = " + texto(soma5(3))
+print "soma5(10) = " + texto(soma5(10))

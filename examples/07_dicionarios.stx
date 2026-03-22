@@ -1,0 +1,39 @@
+# 07 — Dicionários (objetos chave-valor)
+
+pessoa = {
+    "nome":   "Ana",
+    "idade":  28,
+    "cidade": "São Paulo"
+}
+
+print "Nome:   " + pessoa["nome"]
+print "Idade:  " + texto(pessoa["idade"])
+print "Cidade: " + pessoa["cidade"]
+
+# Adicionar e modificar
+pessoa["email"]  = "ana@email.com"
+pessoa["cidade"] = "Rio de Janeiro"
+print "\nAtualizado: {pessoa}"
+
+# Verificar se campo existe
+se pessoa.tem("email") {
+    print "Email: " + pessoa["email"]
+}
+
+# Iterar chaves
+print "\nChaves:"
+para chave em pessoa.chaves() {
+    print "  {chave}: " + texto(pessoa[chave])
+}
+
+# Dicionário aninhado
+config = {
+    "banco": {
+        "host": "localhost",
+        "porta": 5432
+    },
+    "debug": true
+}
+
+print "\nHost: " + config["banco"]["host"]
+print "Porta: " + texto(config["banco"]["porta"])

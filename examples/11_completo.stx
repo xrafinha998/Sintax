@@ -1,0 +1,42 @@
+# 11 — Programa completo: Calculadora de IMC
+
+func calcular_imc(peso, altura) {
+    return peso / (altura * altura)
+}
+
+func classificar_imc(imc) {
+    se imc < 18.5     { return "Abaixo do peso" }
+    se imc < 25.0     { return "Peso normal" }
+    se imc < 30.0     { return "Sobrepeso" }
+    se imc < 35.0     { return "Obesidade grau I" }
+    se imc < 40.0     { return "Obesidade grau II" }
+    return               "Obesidade grau III"
+}
+
+func relatorio(nome, peso, altura) {
+    imc    = calcular_imc(peso, altura)
+    imc    = round(imc, 1)
+    classe = classificar_imc(imc)
+
+    print "─────────────────────────────"
+    print "Nome:          {nome}"
+    print "Peso:          {peso} kg"
+    print "Altura:        {altura} m"
+    print "IMC:           {imc}"
+    print "Classificação: {classe}"
+}
+
+# Banco de dados de pacientes
+pacientes = [
+    { "nome": "Ana",    "peso": 58.0, "altura": 1.65 },
+    { "nome": "Bruno",  "peso": 95.0, "altura": 1.75 },
+    { "nome": "Carla",  "peso": 48.5, "altura": 1.70 },
+    { "nome": "Daniel", "peso": 120.0,"altura": 1.80 }
+]
+
+print "===== RELATÓRIO DE IMC ====="
+para p em pacientes {
+    relatorio(p["nome"], p["peso"], p["altura"])
+}
+print "─────────────────────────────"
+print "Total de pacientes: " + texto(len(pacientes))
