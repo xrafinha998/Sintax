@@ -1,3 +1,5 @@
+from src.parser import NoAtribuicao, NoSe, NoExpressao
+
 class Interpreter:
     def __init__(self):
         self.memoria = {}
@@ -35,6 +37,23 @@ class Interpreter:
                 v1 = self.resolver_valor(no.condicao[0])
                 op = no.condicao[1]
                 v2 = self.resolver_valor(no.condicao[2])
+
+                res = False
+                if op == '>':
+                    res = v1 > v2
+                elif op == '<':
+                    res = v1 < v2
+                elif op == '==':
+                    res = v1 == v2
+                elif op == '!=':
+                    res = v1 != v2
+                elif op == '>=':
+                    res = v1 >= v2
+                elif op == '<=':
+                    res = v1 <= v2
+
+                if res:
+                    print(f"Sintax: {no.acao}")                v2 = self.resolver_valor(no.condicao[2])
 
                 res = False
                 if op == '>': res = v1 > v2
