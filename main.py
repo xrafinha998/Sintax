@@ -8,17 +8,26 @@ def iniciar():
         print("Uso: python main.py arquivo.stx")
         return
 
-    with open(sys.argv[1], 'r') as f:
-        codigo = f.read()
+    try:
+        with open(sys.argv[1], 'r', encoding='utf-8') as f:
+            codigo = f.read()
 
-    lexer = Lexer(codigo)
-    tokens = lexer.gerar_tokens()
-    
-    parser = Parser(tokens)
-    ast = parser.parse()
-    
-    interpretador = Interpreter()
-    interpretador.rodar(ast)
+        # LEXER
+        lexer = Lexer(codigo)
+        tokens = lexer.gerar_tokens()
+        # print("TOKENS:", tokens)  # debug opcional
+
+        # PARSER
+        parser = Parser(tokens)
+        ast = parser.parse()
+        # print("AST:", ast)  # debug opcional
+
+        # INTERPRETER
+        interpretador = Interpreter()
+        interpretador.rodar(ast)
+
+    except Exception as e:
+        print(f"[ERRO SINTAX] {e}")
 
 if __name__ == "__main__":
     iniciar()
