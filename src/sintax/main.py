@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 # ============================================================
 #  SINTAX v4.0 — linguagem geral simples e poderosa
-#  Uso:  python main.py arquivo.stx
-#        python main.py             (modo interativo)
+#  Uso:  sintax arquivo.stx
+#        sintax             (modo interativo)
 # ============================================================
-import sys, os
+import sys
+import os
+
+# IMPORTANTE: Note o "." antes dos nomes dos módulos. 
+# Isso indica ao Python para procurar na mesma pasta deste arquivo.
+from .interpreter import Interpreter
+from .lexer       import Lexer
+from .parser      import Parser
 
 BANNER = """\
   ╔═══════════════════════════════════════════╗
@@ -14,26 +21,96 @@ BANNER = """\
   digite 'sair' para encerrar | 'ajuda' para dicas
 """
 
-
-def _criar_interpreter():
-    from src.interpreter import Interpreter
-    return Interpreter()
-
-
 def _rodar_codigo(codigo, interpreter, arquivo="<stdin>"):
-    from src.lexer   import Lexer
-    from src.parser  import Parser
     try:
         toks = Lexer(codigo, arquivo).tokenizar()
         ast  = Parser(toks).parse()
         interpreter.rodar(ast)
         return True
     except Exception as e:
-        print(e)
+        print(f"Erro: {e}")
         return False
 
-
 def executar_arquivo(caminho):
+    if not os.path.exists(caminho):
+        print(f"\n╔══ ERRO ══════════════════════════════════\n"
+              f"╚► Arquivo não encontrado: '{caminho}'\n")
+        sys.exit(1)
+    with open(caminho, encoding="utf-8") as f:
+        codigo = f.read()
+    interp = Interpreter()
+    _rodar_codigo(codigo, interp, caminho)
+
+def modo_interativo():
+    print(BANNER)
+    interp  = Interpreter()
+    buffer  = []
+    depth   = 0   # profundidade de blocos abertos
+
+    DICAS = """\
+  Exemplos rápidos:
+    x = 10
+    print x
+    print "Olá {x}"
+    para i 5 { print i }
+    func dobrar(n) { return n * 2 }
+    import math
+    print math.pi
+"""
+
+    while True:
+        try:
+            prompt = "... " if buffer else ">>> "
+            linha  = input(prompt)
+        except (EOFError, KeyboardInterrupt):
+            print(); break
+
+        if linha.strip() == "sair":   break
+        if linha.strip() == "ajuda":  print(DICAS); continue
+        if linha.strip() == "limpar": interp = Interpreter(); continue
+
+        depth += linha.count("{") - linha.count("}")
+
+        if depth > 0 or (buffer and linha.strip()):
+            buffer.append(linha)
+            continue
+        else:
+            if buffer:
+                buffer.append(linha)
+                codigo = "\n".join(buffer)
+                buffer = []
+                depth  = 0
+            else:
+                if not linha.strip(): continue
+                codigo = linha
+
+        _rodar_codigo(codigo, interp)
+
+def ajuda():
+    print("""
+SINTAX v4.0 — Linguagem de programação em Português
+
+USO:
+  sintax arquivo.stx     Executa um arquivo
+  sintax                 Modo interativo (REPL)
+  sintax -h              Esta ajuda
+""")
+
+def main():
+    args = sys.argv[1:]
+
+    if not args:
+        modo_interativo()
+        return
+
+    if args[0] in ("-h", "--help", "ajuda"):
+        ajuda()
+        return
+
+    executar_arquivo(args[0])
+
+if __name__ == "__main__":
+    main()
     if not os.path.exists(caminho):
         print(f"\n╔══ ERRO ══════════════════════════════════\n"
               f"╚► Arquivo não encontrado: '{caminho}'\n")
