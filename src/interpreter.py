@@ -1,5 +1,4 @@
-# Importa as definições de estrutura do Parser
-from src.parser import NoAtribuicao, NoSe
+from src.parser import NoAtribuicao, NoSe, NoExpressao
 
 class Interpreter:
     def __init__(self):
@@ -7,20 +6,17 @@ class Interpreter:
 
     def rodar(self, nos):
         for no in nos:
-            # Agora ele vai reconhecer o que é NoAtribuicao
             if isinstance(no, NoAtribuicao):
-                self.memoria[no.nome] = no.valor
-                # Opcional: print(f"[LOG] {no.nome} = {no.valor}")
+                if isinstance(no.valor, NoExpressao):
+                    v1 = int(self.memoria.get(no.valor.esq, no.valor.esq))
+                    v2 = int(no.valor.dir)
+                    if no.valor.op == 'SOMA': self.memoria[no.nome] = v1 + v2
+                    if no.valor.op == 'SUB':  self.memoria[no.nome] = v1 - v2
+                else:
+                    self.memoria[no.nome] = int(no.valor)
             
-            # Agora ele vai reconhecer o que é NoSe
             elif isinstance(no, NoSe):
-                val_real = self.memoria.get(no.nome_var, 0)
-                resultado = False
-                
-                # Lógica de comparação
-                if no.operador == '>': resultado = val_real > no.valor_comp
-                if no.operador == '<': resultado = val_real < no.valor_comp
-                if no.operador == '==': resultado = val_real == no.valor_comp
-                
-                if resultado:
-                    print(f"Sintax diz: {no.mensagem}")
+                v1 = int(self.memoria.get(no.condicao[0], 0))
+                op, v2 = no.condicao[1], int(no.condicao[2])
+                res = (v1 > v2 if op == '>' else v1 < v2 if op == '<' else v1 == v2)
+                if res: print(f"Sintax: {no.acao}")
