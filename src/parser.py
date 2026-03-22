@@ -1,3 +1,4 @@
+from src.tokens import T_EOF, T_ID, T_ATR, T_SE, T_STR, T_OP
 
 class NoAtribuicao:
     def __init__(self, nome, valor):
@@ -18,22 +19,26 @@ class Parser:
 
     def parse(self):
         nos = []
-        while self.tokens[self.pos].tipo != T_EOF:
+        # O loop continua enquanto não chegar no fim dos tokens
+        while self.pos < len(self.tokens) and self.tokens[self.pos].tipo != T_EOF:
             token_atual = self.tokens[self.pos]
             
-            if token_atual.tipo == T_ID and self.tokens[self.pos+1].tipo == T_ATR:
+            # Caso 1: Atribuição (ex: pontos = 100)
+            if token_atual.tipo == T_ID and (self.pos + 1) < len(self.tokens) and self.tokens[self.pos+1].tipo == T_ATR:
                 nome = token_atual.valor
                 valor = self.tokens[self.pos+2].valor
                 nos.append(NoAtribuicao(nome, int(valor)))
                 self.pos += 3
             
+            # Caso 2: Estrutura SE (ex: se pontos > 50 "Ganhou")
             elif token_atual.tipo == T_SE:
                 v_nome = self.tokens[self.pos+1].valor
                 op = self.tokens[self.pos+2].valor
                 v_comp = int(self.tokens[self.pos+3].valor)
-                msg = self.tokens[self.pos+4].valor # Simplificado: pega a string
+                msg = self.tokens[self.pos+4].valor 
                 nos.append(NoSe(v_nome, op, v_comp, msg))
                 self.pos += 5
+            
             else:
                 self.pos += 1
         return nos
