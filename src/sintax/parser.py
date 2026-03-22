@@ -1,10 +1,11 @@
 # ============================================================
 #  SINTAX — Parser v4.0
 # ============================================================
-from src.tokens import *
+# CORREÇÃO: Import relativo para funcionar como pacote instalado
+from .tokens import *
 
 # ─────────────────────────────────────────────────────────────
-#  NÓS DA AST
+#  NÓS DA AST (Árvore de Sintaxe Abstrata)
 # ─────────────────────────────────────────────────────────────
 
 class No:
@@ -16,8 +17,7 @@ class No:
         self.linha = linha
         self.col   = col
 
-
-# ── Literais ──────────────────────────────────────────────────
+# Literais
 class NoInt(No):
     def __init__(self, v, l=0, c=0): super().__init__(l,c); self.valor=v
 class NoFloat(No):
@@ -33,7 +33,7 @@ class NoLista(No):
 class NoDict(No):
     def __init__(self, pares, l=0, c=0): super().__init__(l,c); self.pares=pares
 
-# ── Identificadores e acesso ──────────────────────────────────
+# Identificadores e acesso
 class NoVar(No):
     def __init__(self, nome, l=0, c=0): super().__init__(l,c); self.nome=nome
 class NoProp(No):
@@ -43,7 +43,7 @@ class NoIndice(No):
     def __init__(self, alvo, idx, l=0, c=0):
         super().__init__(l,c); self.alvo=alvo; self.idx=idx
 
-# ── Operações ─────────────────────────────────────────────────
+# Operações
 class NoBinOp(No):
     def __init__(self, esq, op, dir, l=0, c=0):
         super().__init__(l,c); self.esq=esq; self.op=op; self.dir=dir
@@ -51,7 +51,7 @@ class NoUnOp(No):
     def __init__(self, op, operando, l=0, c=0):
         super().__init__(l,c); self.op=op; self.operando=operando
 
-# ── Chamadas ──────────────────────────────────────────────────
+# Chamadas
 class NoChamada(No):
     def __init__(self, func, args, kwargs=None, l=0, c=0):
         super().__init__(l,c); self.func=func; self.args=args
@@ -60,29 +60,25 @@ class NoMetodo(No):
     def __init__(self, obj, metodo, args, l=0, c=0):
         super().__init__(l,c); self.obj=obj; self.metodo=metodo; self.args=args
 
-# ── Atribuições ───────────────────────────────────────────────
+# Atribuições
 class NoAtrib(No):
     def __init__(self, alvo, valor, op="=", l=0, c=0):
         super().__init__(l,c); self.alvo=alvo; self.valor=valor; self.op=op
-# alvo pode ser NoVar, NoProp ou NoIndice
 
-# ── Controle de fluxo ─────────────────────────────────────────
+# Controle de fluxo
 class NoPrint(No):
     def __init__(self, exprs, fim="\n", l=0, c=0):
         super().__init__(l,c); self.exprs=exprs; self.fim=fim
 class NoSe(No):
     def __init__(self, ramos, senao, l=0, c=0):
-        # ramos = [(condicao, bloco), ...]
         super().__init__(l,c); self.ramos=ramos; self.senao=senao
 class NoEnquanto(No):
     def __init__(self, cond, bloco, l=0, c=0):
         super().__init__(l,c); self.cond=cond; self.bloco=bloco
 class NoPara(No):
-    """para var em iteravel"""
     def __init__(self, var, iteravel, bloco, l=0, c=0):
         super().__init__(l,c); self.var=var; self.iteravel=iteravel; self.bloco=bloco
 class NoParaRange(No):
-    """para var ate N  /  para var de A ate B  /  ...passo P"""
     def __init__(self, var, inicio, fim, passo, bloco, l=0, c=0):
         super().__init__(l,c)
         self.var=var; self.inicio=inicio; self.fim=fim
@@ -96,10 +92,9 @@ class NoDelete(No):
     def __init__(self, alvo, l=0, c=0):
         super().__init__(l,c); self.alvo=alvo
 
-# ── Definições ────────────────────────────────────────────────
+# Definições
 class NoFuncDef(No):
     def __init__(self, nome, params, bloco, l=0, c=0):
-        # params = [(nome, default_ou_None), ...]
         super().__init__(l,c)
         self.nome=nome; self.params=params; self.bloco=bloco
 class NoImport(No):
@@ -108,7 +103,6 @@ class NoImport(No):
 class NoGlobal(No):
     def __init__(self, nomes, l=0, c=0):
         super().__init__(l,c); self.nomes=nomes
-
 
 # ─────────────────────────────────────────────────────────────
 #  PARSER
@@ -124,14 +118,12 @@ class ParseError(Exception):
             f"╚► {msg}"
         )
 
-
 class Parser:
     def __init__(self, tokens):
-        self.tokens = [t for t in tokens if t.tipo != T_NEWLINE or True]
-        self._tokens_filtrados = tokens
+        # CORREÇÃO: Removido o 'or True' que invalidava o filtro de tokens
+        self.tokens = [t for t in tokens]
         self.pos    = 0
 
-    # ── Navegação ─────────────────────────────────────────────
     def _at(self, offset=0):
         i = self.pos + offset
         return self.tokens[i] if i < len(self.tokens) else self.tokens[-1]
@@ -159,18 +151,6 @@ class Parser:
             if self._at().tipo == T_NEWLINE:
                 self._avancar()
 
-    def _espiar(self, skip_nl=True):
-        """Olha para o próximo token não-newline."""
-        i = self.pos
-        while i < len(self.tokens):
-            t = self.tokens[i]
-            if t.tipo == T_NEWLINE and skip_nl:
-                i += 1
-            else:
-                return t
-        return self.tokens[-1]
-
-    # ── Entrada ───────────────────────────────────────────────
     def parse(self):
         nos = []
         self._pular_nl()
@@ -179,10 +159,8 @@ class Parser:
             self._pular_nl()
         return nos
 
-    # ── Instrução ─────────────────────────────────────────────
     def _instrucao(self):
         t = self._at()
-
         if t.tipo == T_PRINT:   return self._print()
         if t.tipo == T_IMPORT:  return self._import()
         if t.tipo == T_FUNC:    return self._func_def()
@@ -192,19 +170,16 @@ class Parser:
         if t.tipo == T_PARA:    return self._para()
         if t.tipo == T_GLOBAL:  return self._global()
         if t.tipo == T_DELETE:  return self._delete()
-
         if t.tipo == T_PARE:
             self._avancar(); self._consumir_nl()
             return NoPare(t.linha, t.col)
         if t.tipo == T_CONTINUA:
             self._avancar(); self._consumir_nl()
             return NoContinua(t.linha, t.col)
-
-        # Atribuição ou expressão-instrução
         return self._atrib_ou_expr()
 
     def _print(self):
-        t = self._avancar()   # consome 'print'
+        t = self._avancar()
         exprs = []
         if self._at().tipo not in (T_NEWLINE, T_EOF):
             exprs.append(self._expr())
@@ -225,7 +200,7 @@ class Parser:
         return NoImport(nome, alias, t.linha, t.col)
 
     def _func_def(self):
-        t = self._avancar()   # func
+        t = self._avancar()
         nome = self._consumir(T_ID, "Esperava nome da função").valor
         self._consumir(T_LPAREN)
         params = []
@@ -256,32 +231,28 @@ class Parser:
         return NoReturn(expr, t.linha, t.col)
 
     def _se(self):
-        t   = self._avancar()   # se
+        t = self._avancar()
         ramos = []
-        cond  = self._expr()
+        cond = self._expr()
         self._pular_nl()
         bloco = self._bloco()
         ramos.append((cond, bloco))
-
         senao = None
         while True:
             self._pular_nl()
-            # "senao se" ou "else if"
             if self._at().tipo == T_SENAO:
-                prox = self._at(1)
-                if prox.tipo == T_SE:
-                    self._avancar(); self._avancar()   # consome senao se
+                if self._at(1).tipo == T_SE:
+                    self._avancar(); self._avancar()
                     c2 = self._expr()
                     self._pular_nl()
                     b2 = self._bloco()
                     ramos.append((c2, b2))
                     continue
                 else:
-                    self._avancar()   # consome senao
+                    self._avancar()
                     self._pular_nl()
                     senao = self._bloco()
             break
-
         return NoSe(ramos, senao, t.linha, t.col)
 
     def _enquanto(self):
@@ -292,55 +263,43 @@ class Parser:
         return NoEnquanto(cond, bloco, t.linha, t.col)
 
     def _para(self):
-        t   = self._avancar()   # para
+        t = self._avancar()
         var = self._consumir(T_ID, "Esperava nome de variável após 'para'").valor
-
-        # para var em iteravel { }
         if self._at().tipo == T_EM:
             self._avancar()
             iteravel = self._expr()
             self._pular_nl()
             bloco = self._bloco()
             return NoPara(var, iteravel, bloco, t.linha, t.col)
-
-        # para var ate N { }
         if self._at().tipo == T_ATE:
             self._avancar()
-            fim   = self._expr()
+            fim = self._expr()
             passo = None
             if self._at().tipo == T_PASSO:
                 self._avancar(); passo = self._expr()
             self._pular_nl()
             bloco = self._bloco()
             return NoParaRange(var, None, fim, passo, bloco, t.linha, t.col)
-
-        # para var N { }  (atalho: para i 10 == para i ate 10)
         if self._at().tipo in (T_INT, T_FLOAT, T_ID, T_LPAREN):
-            fim   = self._expr()
+            fim = self._expr()
             passo = None
             if self._at().tipo == T_PASSO:
                 self._avancar(); passo = self._expr()
             self._pular_nl()
             bloco = self._bloco()
             return NoParaRange(var, None, fim, passo, bloco, t.linha, t.col)
-
-        # para var de A ate B [passo P] { }
         if self._at().tipo == T_DE:
             self._avancar()
             inicio = self._expr()
-            self._consumir(T_ATE, "Esperava 'ate' após valor inicial")
-            fim    = self._expr()
-            passo  = None
+            self._consumir(T_ATE)
+            fim = self._expr()
+            passo = None
             if self._at().tipo == T_PASSO:
                 self._avancar(); passo = self._expr()
             self._pular_nl()
             bloco = self._bloco()
             return NoParaRange(var, inicio, fim, passo, bloco, t.linha, t.col)
-
-        raise ParseError(
-            "Esperava 'em', 'ate', 'de' ou número após variável do 'para'",
-            self._at()
-        )
+        raise ParseError("Erro na sintaxe do laço 'para'", self._at())
 
     def _global(self):
         t = self._avancar()
@@ -358,44 +317,39 @@ class Parser:
         return NoDelete(alvo, t.linha, t.col)
 
     def _atrib_ou_expr(self):
-        """Atribuição (simples ou composta) ou expressão-instrução."""
         t = self._at()
         expr = self._expr()
-        OPS = {
-            T_ATR: "=", T_ATR_SOMA: "+=", T_ATR_SUB: "-=",
-            T_ATR_MULT: "*=", T_ATR_DIV: "/=", T_ATR_MOD: "%=",
-        }
+        OPS = {T_ATR:"=", T_ATR_SOMA:"+=", T_ATR_SUB:"-=", T_ATR_MULT:"*=", T_ATR_DIV:"/=", T_ATR_MOD:"%="}
         if self._at().tipo in OPS:
-            op  = OPS[self._avancar().tipo]
+            op = OPS[self._avancar().tipo]
             val = self._expr()
             self._consumir_nl()
             return NoAtrib(expr, val, op, t.linha, t.col)
         self._consumir_nl()
-        return expr   # expressão como instrução (ex: chamada de função)
+        return expr
 
-    # ── Bloco { } ─────────────────────────────────────────────
     def _bloco(self):
-        self._consumir(T_LBRACE, "Esperava '{' para abrir bloco")
+        self._consumir(T_LBRACE)
         self._pular_nl()
         nos = []
         while self._at().tipo not in (T_RBRACE, T_EOF):
             nos.append(self._instrucao())
             self._pular_nl()
-        self._consumir(T_RBRACE, "Esperava '}' para fechar bloco")
+        self._consumir(T_RBRACE)
         self._pular_nl()
         return nos
 
-    # ── Expressões (precedência Pratt-style) ──────────────────
-    def _expr(self):          return self._ou()
+    # Precedência de Operadores
+    def _expr(self): return self._ou()
     def _ou(self):
         esq = self._e()
         while self._at().tipo == T_OU:
-            op=self._avancar(); esq=NoBinOp(esq,"ou",self._e(),op.linha,op.col)
+            t=self._avancar(); esq=NoBinOp(esq,"ou",self._e(),t.linha,t.col)
         return esq
     def _e(self):
         esq = self._nao()
         while self._at().tipo == T_E:
-            op=self._avancar(); esq=NoBinOp(esq,"e",self._nao(),op.linha,op.col)
+            t=self._avancar(); esq=NoBinOp(esq,"e",self._nao(),t.linha,t.col)
         return esq
     def _nao(self):
         if self._at().tipo == T_NAO:
@@ -411,127 +365,84 @@ class Parser:
     def _soma(self):
         esq = self._mult()
         while self._at().tipo in (T_SOMA, T_SUB):
-            t=self._avancar()
-            esq=NoBinOp(esq, t.valor, self._mult(), t.linha, t.col)
+            t=self._avancar(); esq=NoBinOp(esq, t.valor, self._mult(), t.linha, t.col)
         return esq
     def _mult(self):
         esq = self._pot()
         while self._at().tipo in (T_MULT, T_DIV, T_DIVINT, T_MOD):
-            t=self._avancar()
-            esq=NoBinOp(esq, t.valor, self._pot(), t.linha, t.col)
+            t=self._avancar(); esq=NoBinOp(esq, t.valor, self._pot(), t.linha, t.col)
         return esq
     def _pot(self):
         base = self._unario()
         if self._at().tipo == T_POT:
-            t=self._avancar()
-            return NoBinOp(base, "**", self._pot(), t.linha, t.col)  # dir-assoc
+            t=self._avancar(); return NoBinOp(base, "**", self._pot(), t.linha, t.col)
         return base
     def _unario(self):
         if self._at().tipo == T_SUB:
             t=self._avancar(); return NoUnOp("-", self._unario(), t.linha, t.col)
-        if self._at().tipo == T_NAO:
-            t=self._avancar(); return NoUnOp("nao", self._unario(), t.linha, t.col)
         return self._sufixo(self._primario())
 
     def _sufixo(self, no):
-        """Índice, propriedade, chamada."""
         while True:
             t = self._at()
             if t.tipo == T_LBRACKET:
-                self._avancar()
-                idx = self._expr()
-                self._consumir(T_RBRACKET)
+                self._avancar(); idx = self._expr(); self._consumir(T_RBRACKET)
                 no = NoIndice(no, idx, t.linha, t.col)
             elif t.tipo == T_PONTO:
-                self._avancar()
-                prop = self._consumir(T_ID).valor
+                self._avancar(); prop = self._consumir(T_ID).valor
                 if self._at().tipo == T_LPAREN:
-                    self._avancar()
-                    args = self._args()
-                    self._consumir(T_RPAREN)
+                    self._avancar(); args = self._args(); self._consumir(T_RPAREN)
                     no = NoMetodo(no, prop, args, t.linha, t.col)
-                else:
-                    no = NoProp(no, prop, t.linha, t.col)
+                else: no = NoProp(no, prop, t.linha, t.col)
             elif t.tipo == T_LPAREN:
-                if isinstance(no, NoVar):
-                    self._avancar()
-                    args = self._args()
-                    self._consumir(T_RPAREN)
-                    no = NoChamada(no, args, {}, t.linha, t.col)
-                else:
-                    break
-            else:
-                break
+                self._avancar(); args = self._args(); self._consumir(T_RPAREN)
+                no = NoChamada(no, args, {}, t.linha, t.col)
+            else: break
         return no
 
     def _primario(self):
         t = self._at()
-        if t.tipo == T_INT:    self._avancar(); return NoInt(t.valor,   t.linha, t.col)
+        if t.tipo == T_INT:    self._avancar(); return NoInt(t.valor, t.linha, t.col)
         if t.tipo == T_FLOAT:  self._avancar(); return NoFloat(t.valor, t.linha, t.col)
-        if t.tipo == T_STR:    self._avancar(); return NoStr(t.valor,   t.linha, t.col)
-        if t.tipo == T_BOOL:   self._avancar(); return NoBool(t.valor,  t.linha, t.col)
+        if t.tipo == T_STR:    self._avancar(); return NoStr(t.valor, t.linha, t.col)
+        if t.tipo == T_BOOL:   self._avancar(); return NoBool(t.valor, t.linha, t.col)
         if t.tipo == T_NULO:   self._avancar(); return NoNulo(t.linha, t.col)
-        if t.tipo == T_ID:     self._avancar(); return NoVar(t.valor,   t.linha, t.col)
-
-        # Lista [ ... ]
+        if t.tipo == T_ID:     self._avancar(); return NoVar(t.valor, t.linha, t.col)
         if t.tipo == T_LBRACKET:
-            self._avancar()
-            self._pular_nl()
-            els = []
+            self._avancar(); self._pular_nl(); els = []
             if self._at().tipo != T_RBRACKET:
                 els.append(self._expr())
                 while self._at().tipo == T_COMMA:
-                    self._avancar()
-                    self._pular_nl()
+                    self._avancar(); self._pular_nl()
                     if self._at().tipo == T_RBRACKET: break
                     els.append(self._expr())
-            self._pular_nl()
-            self._consumir(T_RBRACKET)
-            return NoLista(els, t.linha, t.col)
-
-        # Dict { chave: valor, ... }
-        if t.tipo == T_LBRACE:
-            return self._dict_literal()
-
-        # Parênteses
+            self._pular_nl(); self._consumir(T_RBRACKET); return NoLista(els, t.linha, t.col)
+        if t.tipo == T_LBRACE: return self._dict_literal()
         if t.tipo == T_LPAREN:
-            self._avancar()
-            expr = self._expr()
-            self._consumir(T_RPAREN)
-            return expr
-
-        raise ParseError(f"Expressão inesperada: '{t.valor}' (tipo {t.tipo})", t)
+            self._avancar(); expr = self._expr(); self._consumir(T_RPAREN); return expr
+        raise ParseError(f"Erro inesperado: {t.valor}", t)
 
     def _dict_literal(self):
-        t = self._avancar()   # {
-        self._pular_nl()
-        pares = []
+        t = self._avancar(); self._pular_nl(); pares = []
         if self._at().tipo != T_RBRACE:
             pares.append(self._par_dict())
             while self._at().tipo == T_COMMA:
-                self._avancar()
-                self._pular_nl()
+                self._avancar(); self._pular_nl()
                 if self._at().tipo == T_RBRACE: break
                 pares.append(self._par_dict())
-        self._pular_nl()
-        self._consumir(T_RBRACE)
-        return NoDict(pares, t.linha, t.col)
+        self._pular_nl(); self._consumir(T_RBRACE); return NoDict(pares, t.linha, t.col)
 
     def _par_dict(self):
-        chave = self._expr()
-        self._consumir(T_COLON, "Esperava ':' após chave do dicionário")
-        valor = self._expr()
+        chave = self._expr(); self._consumir(T_COLON); valor = self._expr()
         return (chave, valor)
 
     def _args(self):
         args = []
         self._pular_nl()
-        if self._at().tipo == T_RPAREN:
-            return args
+        if self._at().tipo == T_RPAREN: return args
         args.append(self._expr())
         while self._at().tipo == T_COMMA:
-            self._avancar()
-            self._pular_nl()
+            self._avancar(); self._pular_nl()
             if self._at().tipo == T_RPAREN: break
             args.append(self._expr())
         return args
