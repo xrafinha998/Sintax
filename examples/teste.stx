@@ -1,0 +1,3 @@
+pontos = 100
+se pontos > 50 ("Você venceu o jogo!")
+se pontos < 20 ("Você perdeu...")
