@@ -3,25 +3,45 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sintaxe"
-version = "1.0.0"
+name = "sintax"
+version = "4.0.0"
 description = "Linguagem de programação em Português simples e poderosa"
 readme = "README.md"
-requires-python = ">=3.7"
-license = { text = "MIT" }
-
 authors = [
-  { name = "Seu Nome" }
+    { name = "Rafinha", email = "Rafaelvieira123jr@gmail.com" }
 ]
+license = { text = "MIT" }
+requires-python = ">=3.7"
 
-keywords = ["linguagem", "programacao", "interprete", "portugues"]
+keywords = [
+    "linguagem",
+    "programacao",
+    "portugues",
+    "interpreter",
+    "scripting",
+    "educacao"
+]
 
 classifiers = [
-  "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent"
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Interpreters",
+    "Intended Audience :: Education"
 ]
 
-# 🔥 Isso cria comando no terminal
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/xrafinha998/Sintax"
+Repository = "https://github.com/xrafinha998/Sintax"
+
 [project.scripts]
-sintaxe = "main:main"
+sintax = "main:main"
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "."
