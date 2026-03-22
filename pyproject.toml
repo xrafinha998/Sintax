@@ -10,7 +10,7 @@ readme = "README.md"
 authors = [
     { name = "Rafinha", email = "Rafaelvieira123jr@gmail.com" }
 ]
-license = "MIT"
+license = { text = "MIT" }
 requires-python = ">=3.7"
 
 keywords = [
@@ -34,6 +34,19 @@ dependencies = []
 
 [project.urls]
 Homepage = "https://github.com/xrafinha998/Sintax"
+Repository = "https://github.com/xrafinha998/Sintax"
+
+[project.scripts]
+# O comando 'sintax' chamará a função 'main' dentro de 'src/sintax/main.py'
+sintax = "sintax.main:main"
+
+[tool.setuptools]
+# Define que a pasta 'src' contém a raiz dos pacotes
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+# Encontra automaticamente a pasta 'sintax' dentro de 'src'
+where = ["src"]
 Repository = "https://github.com/xrafinha998/Sintax"
 
 [project.scripts]
