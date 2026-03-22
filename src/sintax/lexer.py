@@ -1,7 +1,8 @@
 # ============================================================
 #  SINTAX — Lexer v4.0
 # ============================================================
-from src.tokens import *
+# CORREÇÃO: Usando import relativo para encontrar os tokens no mesmo pacote
+from .tokens import *
 
 # Palavras-chave aceitas em português e inglês
 KEYWORDS = {
@@ -64,10 +65,10 @@ KEYWORDS = {
     "not":  T_NAO,
 
     # Condicional encadeada
-    "senao se":   T_SENOUSE,   # tratado no lexer como dois tokens normalmente
+    "senao se":   T_SENOUSE,   
 }
 
-# Tokens que fazem NEWLINE ser suprimido após eles
+# Restante do código (inalterado, mas mantendo a estrutura para você copiar)
 _SEM_NL_APOS = {
     T_COMMA, T_LBRACE, T_LPAREN, T_LBRACKET,
     T_ATR, T_ATR_SOMA, T_ATR_SUB, T_ATR_MULT, T_ATR_DIV, T_ATR_MOD,
@@ -75,7 +76,6 @@ _SEM_NL_APOS = {
     T_EQ, T_NEQ, T_GT, T_LT, T_GTE, T_LTE,
     T_E, T_OU, T_NAO, T_PONTO,
 }
-
 
 class LexError(Exception):
     def __init__(self, msg, arquivo, linha, col):
@@ -89,7 +89,6 @@ class LexError(Exception):
             f"╚► {msg}"
         )
 
-
 class Lexer:
     def __init__(self, texto, arquivo="<stdin>"):
         self.texto   = texto
@@ -97,10 +96,8 @@ class Lexer:
         self.pos     = 0
         self.linha   = 1
         self.col     = 1
-        # profundidade de ( ) [ ] — dentro deles, newlines são ignoradas
         self._profundidade = 0
 
-    # ── Navegação ─────────────────────────────────────────────
     def _c(self, offset=0):
         i = self.pos + offset
         return self.texto[i] if i < len(self.texto) else ""
@@ -121,23 +118,21 @@ class Lexer:
     def _erro(self, msg):
         raise LexError(msg, self.arquivo, self.linha, self.col)
 
-    # ── Leitores especializados ───────────────────────────────
     def _string(self):
         linha, col = self.linha, self.col
-        self._avanca()   # pula "
+        self._avanca()
         resultado = ""
         while self.pos < len(self.texto) and self._c() != '"':
             if self._c() == "\\":
                 self._avanca()
-                ESC = {"n": "\n", "t": "\t", '"': '"',
-                       "\\": "\\", "r": "\r", "0": "\0"}
+                ESC = {"n": "\n", "t": "\t", '"': '"', "\\": "\\", "r": "\r", "0": "\0"}
                 resultado += ESC.get(self._c(), self._c())
                 self._avanca()
             else:
                 resultado += self._avanca()
         if self.pos >= len(self.texto):
             raise LexError("String não fechada", self.arquivo, linha, col)
-        self._avanca()   # pula "
+        self._avanca()
         return Token(T_STR, resultado, linha, col, self.arquivo)
 
     def _numero(self):
@@ -145,9 +140,8 @@ class Lexer:
         num = ""
         while self.pos < len(self.texto) and self._c().isdigit():
             num += self._avanca()
-        # ponto decimal
         if self._c() == "." and self._c(1).isdigit():
-            num += self._avanca()   # ponto
+            num += self._avanca()
             while self.pos < len(self.texto) and self._c().isdigit():
                 num += self._avanca()
             return Token(T_FLOAT, float(num), linha, col, self.arquivo)
@@ -167,7 +161,6 @@ class Lexer:
             return Token(tipo, val, linha, col, self.arquivo)
         return Token(kw, ident, linha, col, self.arquivo)
 
-    # ── Principal ─────────────────────────────────────────────
     def tokenizar(self):
         tokens  = []
         ultimo  = lambda: tokens[-1].tipo if tokens else None
@@ -176,30 +169,24 @@ class Lexer:
             tokens.append(tok)
 
         def emit_nl():
-            if self._profundidade == 0 and ultimo() not in (
-                _SEM_NL_APOS | {T_NEWLINE, None}
-            ):
+            if self._profundidade == 0 and ultimo() not in (_SEM_NL_APOS | {T_NEWLINE, None}):
                 tokens.append(self._tok(T_NEWLINE, "\n"))
 
         while self.pos < len(self.texto):
             c = self._c()
 
-            # Espaços / tabs
             if c in " \t\r":
                 self._avanca(); continue
 
-            # Quebra de linha
             if c == "\n":
                 emit_nl()
                 self._avanca(); continue
 
-            # Comentário de linha (#)
             if c == "#":
                 while self.pos < len(self.texto) and self._c() != "\n":
                     self._avanca()
                 continue
 
-            # Comentário de bloco /* ... */
             if c == "/" and self._c(1) == "*":
                 self._avanca(); self._avanca()
                 while self.pos < len(self.texto) - 1:
@@ -208,11 +195,9 @@ class Lexer:
                     self._avanca()
                 continue
 
-            # String
             if c == '"':
                 emit(self._string()); continue
 
-            # String com aspas simples
             if c == "'":
                 self._avanca()
                 s = ""
@@ -229,46 +214,36 @@ class Lexer:
                 self._avanca()
                 emit(self._tok(T_STR, s)); continue
 
-            # Número
             if c.isdigit():
                 emit(self._numero()); continue
 
-            # Identificador / palavra-chave
             if c.isalpha() or c == "_":
                 emit(self._identificador()); continue
 
-            # ── Operadores multi-char (ordem importa!) ────────
             dois = c + self._c(1)
+            # Operadores multi-char
+            MULTI = {
+                "**": T_POT, "//": T_DIVINT, "==": T_EQ, "!=": T_NEQ,
+                "<=": T_LTE, ">=": T_GTE, "+=": T_ATR_SOMA, "-=": T_ATR_SUB,
+                "*=": T_ATR_MULT, "/=": T_ATR_DIV, "%=": T_ATR_MOD
+            }
+            if dois in MULTI:
+                emit(self._tok(MULTI[dois], dois)); self._avanca(); self._avanca(); continue
 
-            if dois == "**": emit(self._tok(T_POT,     "**")); self._avanca(); self._avanca(); continue
-            if dois == "//": emit(self._tok(T_DIVINT,  "//")); self._avanca(); self._avanca(); continue
-            if dois == "==": emit(self._tok(T_EQ,      "==")); self._avanca(); self._avanca(); continue
-            if dois == "!=": emit(self._tok(T_NEQ,     "!=")); self._avanca(); self._avanca(); continue
-            if dois == "<=": emit(self._tok(T_LTE,     "<=")); self._avanca(); self._avanca(); continue
-            if dois == ">=": emit(self._tok(T_GTE,     ">=")); self._avanca(); self._avanca(); continue
-            if dois == "+=": emit(self._tok(T_ATR_SOMA,"+=")); self._avanca(); self._avanca(); continue
-            if dois == "-=": emit(self._tok(T_ATR_SUB, "-=")); self._avanca(); self._avanca(); continue
-            if dois == "*=": emit(self._tok(T_ATR_MULT,"*=")); self._avanca(); self._avanca(); continue
-            if dois == "/=": emit(self._tok(T_ATR_DIV, "/=")); self._avanca(); self._avanca(); continue
-            if dois == "%=": emit(self._tok(T_ATR_MOD, "%=")); self._avanca(); self._avanca(); continue
-
-            # ── Char único ────────────────────────────────────
+            # Char único
             SIMPLES = {
-                "+": T_SOMA,  "-": T_SUB,  "*": T_MULT,
-                "/": T_DIV,   "%": T_MOD,
-                "<": T_LT,    ">": T_GT,   "=": T_ATR,
-                ",": T_COMMA, ":": T_COLON, ".": T_PONTO,
+                "+": T_SOMA, "-": T_SUB, "*": T_MULT, "/": T_DIV, "%": T_MOD,
+                "<": T_LT, ">": T_GT, "=": T_ATR, ",": T_COMMA, ":": T_COLON, ".": T_PONTO,
             }
             if c in SIMPLES:
                 emit(self._tok(SIMPLES[c], c)); self._avanca(); continue
 
-            # Delimitadores com rastreamento de profundidade
             if c == "(":
                 self._profundidade += 1
-                emit(self._tok(T_LPAREN,   "(")); self._avanca(); continue
+                emit(self._tok(T_LPAREN, "(")); self._avanca(); continue
             if c == ")":
                 self._profundidade = max(0, self._profundidade - 1)
-                emit(self._tok(T_RPAREN,   ")")); self._avanca(); continue
+                emit(self._tok(T_RPAREN, ")")); self._avanca(); continue
             if c == "[":
                 self._profundidade += 1
                 emit(self._tok(T_LBRACKET, "[")); self._avanca(); continue
@@ -276,16 +251,14 @@ class Lexer:
                 self._profundidade = max(0, self._profundidade - 1)
                 emit(self._tok(T_RBRACKET, "]")); self._avanca(); continue
             if c == "{":
-                emit(self._tok(T_LBRACE,   "{")); self._avanca(); continue
+                emit(self._tok(T_LBRACE, "{")); self._avanca(); continue
             if c == "}":
-                # Fecha bloco → emite NEWLINE antes se necessário
                 if self._profundidade == 0 and ultimo() not in (T_NEWLINE, T_LBRACE, None):
                     tokens.append(self._tok(T_NEWLINE, "\n"))
-                emit(self._tok(T_RBRACE,   "}")); self._avanca(); continue
+                emit(self._tok(T_RBRACE, "}")); self._avanca(); continue
 
             self._erro(f"Caractere inesperado: '{c}'")
 
-        # EOF
         emit_nl()
         emit(self._tok(T_EOF))
         return tokens
