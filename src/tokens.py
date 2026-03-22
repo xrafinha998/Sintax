@@ -1,22 +1,33 @@
-from src.parser import NoAtribuicao, NoSe, NoExpressao
+# TIPOS DE TOKEN
 
-class Interpreter:
-    def __init__(self):
-        self.memoria = {}
+T_ID = "ID"
+T_INT = "INT"
+T_STR = "STR"
 
-    def rodar(self, nos):
-        for no in nos:
-            if isinstance(no, NoAtribuicao):
-                if isinstance(no.valor, NoExpressao):
-                    v1 = int(self.memoria.get(no.valor.esq, no.valor.esq))
-                    v2 = int(no.valor.dir)
-                    if no.valor.op == 'SOMA': self.memoria[no.nome] = v1 + v2
-                    if no.valor.op == 'SUB':  self.memoria[no.nome] = v1 - v2
-                else:
-                    self.memoria[no.nome] = int(no.valor)
-            
-            elif isinstance(no, NoSe):
-                v1 = int(self.memoria.get(no.condicao[0], 0))
-                op, v2 = no.condicao[1], int(no.condicao[2])
-                res = (v1 > v2 if op == '>' else v1 < v2 if op == '<' else v1 == v2)
-                if res: print(f"Sintax: {no.acao}")
+T_SE = "SE"
+T_SENAO = "SENAO"
+T_S_OU = "SENOUSE"
+
+T_OP = "OP"
+
+T_SOMA = "SOMA"
+T_SUB = "SUB"
+T_MULT = "MULT"
+T_DIV = "DIV"
+
+T_ATR = "ATR"
+
+T_LPAREN = "LPAREN"
+T_RPAREN = "RPAREN"
+
+T_EOF = "EOF"
+
+
+# CLASSE TOKEN
+class Token:
+    def __init__(self, tipo, valor=None):
+        self.tipo = tipo
+        self.valor = valor
+
+    def __repr__(self):
+        return f"{self.tipo}:{self.valor}"
