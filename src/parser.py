@@ -1,53 +1,83 @@
 from src.tokens import *
 
-class NoExpressao: # Para contas: pontos + 10
+class NoExpressao:
     def __init__(self, esq, op, dir):
-        self.esq, self.op, self.dir = esq, op, dir
+        self.esq = esq
+        self.op = op
+        self.dir = dir
 
 class NoAtribuicao:
     def __init__(self, nome, valor):
-        self.nome, self.valor = nome, valor
+        self.nome = nome
+        self.valor = valor
 
 class NoSe:
-    def __init__(self, condicao, acao, senao_acao=None):
-        self.condicao, self.acao, self.senao_acao = condicao, acao, senao_acao
+    def __init__(self, condicao, acao):
+        self.condicao = condicao
+        self.acao = acao
 
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
         self.pos = 0
 
+    def atual(self):
+        return self.tokens[self.pos]
+
+    def avancar(self):
+        self.pos += 1
+
     def parse(self):
         instrucoes = []
-        while self.tokens[self.pos].tipo != T_EOF:
-            t = self.tokens[self.pos]
-            
-            if t.tipo == T_ID and self.tokens[self.pos+1].tipo == T_ATR:
-                nome = t.valor
-                self.pos += 2
-                valor = self.tokens[self.pos].valor
-                # Verifica se é uma conta (ex: x = x + 1)
-                if self.tokens[self.pos+1].tipo in (T_SOMA, T_SUB):
-                    op = self.tokens[self.pos+1].tipo
-                    v2 = self.tokens[self.pos+2].valor
-                    instrucoes.append(NoAtribuicao(nome, NoExpressao(valor, op, v2)))
-                    self.pos += 3
-                else:
-                    instrucoes.append(NoAtribuicao(nome, valor))
-                    self.pos += 1
-            
-            elif t.tipo == T_SE:
-                cond = (self.tokens[self.pos+1].valor, self.tokens[self.pos+2].valor, self.tokens[self.pos+3].valor)
-                acao = self.tokens[self.pos+4].valor
-                self.pos += 5
-                instrucoes.append(NoSe(cond, acao))
-            else: self.pos += 1
-        return instrucoes
-                v_comp = int(self.tokens[self.pos+3].valor)
-                msg = self.tokens[self.pos+4].valor 
-                nos.append(NoSe(v_nome, op, v_comp, msg))
-                self.pos += 5
-            
+
+        while self.atual().tipo != T_EOF:
+            if self.atual().tipo == T_ID:
+                instrucoes.append(self.parse_atr())
+            elif self.atual().tipo == T_SE:
+                instrucoes.append(self.parse_se())
             else:
-                self.pos += 1
-        return nos
+                self.avancar()
+
+        return instrucoes
+
+    def parse_atr(self):
+        nome = self.atual().valor
+        self.avancar()  # ID
+
+        self.avancar()  # =
+
+        valor = self.parse_expr()
+
+        return NoAtribuicao(nome, valor)
+
+    def parse_expr(self):
+        esq = self.atual().valor
+        self.avancar()
+
+        if self.atual().tipo in (T_SOMA, T_SUB, T_MULT, T_DIV):
+            op = self.atual().tipo
+            self.avancar()
+
+            dir = self.atual().valor
+            self.avancar()
+
+            return NoExpressao(esq, op, dir)
+
+        return esq
+
+    def parse_se(self):
+        self.avancar()  # se
+
+        v1 = self.atual().valor
+        self.avancar()
+
+        op = self.atual().valor
+        self.avancar()
+
+        v2 = self.atual().valor
+        self.avancar()
+
+        acao = self.atual().valor
+        self.avancar()
+
+        return NoSe((v1, op, v2), acao)
