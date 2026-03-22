@@ -36,19 +36,8 @@ dependencies = []
 Homepage = "https://github.com/xrafinha998/Sintax"
 Repository = "https://github.com/xrafinha998/Sintax"
 
-# 🔥 CORRIGIDO AQUI
 [project.scripts]
 sintax = "src.main:main"
-
-[tool.setuptools]
-packages = ["src"]
-
-[tool.setuptools.package-dir]
-"" = "."Homepage = "https://github.com/xrafinha998/Sintax"
-Repository = "https://github.com/xrafinha998/Sintax"
-
-[project.scripts]
-sintax = "main:main"
 
 [tool.setuptools]
 packages = ["src"]
