@@ -10,7 +10,7 @@ readme = "README.md"
 authors = [
     { name = "Rafinha", email = "Rafaelvieira123jr@gmail.com" }
 ]
-license = { text = "MIT" }
+license = "MIT"
 requires-python = ">=3.7"
 
 keywords = [
@@ -25,7 +25,6 @@ keywords = [
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Interpreters",
     "Intended Audience :: Education"
@@ -35,6 +34,17 @@ dependencies = []
 
 [project.urls]
 Homepage = "https://github.com/xrafinha998/Sintax"
+Repository = "https://github.com/xrafinha998/Sintax"
+
+# 🔥 CORRIGIDO AQUI
+[project.scripts]
+sintax = "src.main:main"
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "."Homepage = "https://github.com/xrafinha998/Sintax"
 Repository = "https://github.com/xrafinha998/Sintax"
 
 [project.scripts]
