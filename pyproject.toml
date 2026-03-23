@@ -18,7 +18,7 @@ keywords = [
     "interpretador",
     "language",
     "interpreter",
-    "educational",
+    "educational"
 ]
 
 classifiers = [
@@ -37,7 +37,7 @@ classifiers = [
     "Topic :: Education",
     "Natural Language :: Portuguese (Brazilian)",
     "Environment :: Console",
-    "Operating System :: OS Independent",
+    "Operating System :: OS Independent"
 ]
 
 dependencies = []
@@ -69,70 +69,7 @@ exclude = ["examples*", "tests*"]
 
 # ── Arquivos extras incluídos no pacote ───────────────────────
 [tool.setuptools.package-data]
-sintax = ["stdlib/*.stx", "examples/*.stx"]    "Topic :: Education",
-    "Natural Language :: Portuguese (Brazilian)",
-    "Environment :: Console",
-    "Operating System :: OS Independent",
+sintax = [
+    "stdlib/*.stx",
+    "examples/*.stx"
 ]
-
-# Sem dependências externas — funciona com Python puro
-dependencies = []
-
-# ── Autores ───────────────────────────────────────────────────
-[[project.authors]]
-name  = "Sintax Language"
-email = "contato@sintax-lang.dev"
-
-# ── URLs do projeto ───────────────────────────────────────────
-[project.urls]
-Homepage       = "https://github.com/xrafinha998/Sintax"
-Repository     = "https://github.com/xrafinha998/Sintax"
-Documentation  = "https://github.com/xrafinha998/Sintax#readme"
-"Bug Tracker"  = "https://github.com/xrafinha998/Sintax/issues"
-
-# ── Comando de linha de comando ───────────────────────────────
-[project.scripts]
-sintax = "sintax.cli:main"
-
-# ── Pacotes incluídos ─────────────────────────────────────────
-[tool.setuptools.packages.find]
-where   = ["."]
-include = ["sintax*"]
-exclude = ["examples*", "tests*"]
-
-# ── Arquivos extras incluídos no pacote ───────────────────────
-[tool.setuptools.package-data]
-"sintax" = ["stdlib/*.stx", "examples/*.stx"]
-
-# ── Segunda parte repetida corrigida ─────────────────────────
-# Mantendo todos os blocos originais sem duplicação de erro
-
-# Sem dependências externas — funciona com Python puro
-# (mesma lista vazia de dependencies repetida)
-dependencies = []
-
-# Autores repetidos
-[[project.authors]]
-name  = "Sintax Language"
-email = "contato@sintax-lang.dev"
-
-# URLs repetidas
-[project.urls]
-Homepage       = "https://github.com/xrafinha998/Sintax"
-Repository     = "https://github.com/xrafinha998/Sintax"
-Documentation  = "https://github.com/xrafinha998/Sintax#readme"
-"Bug Tracker"  = "https://github.com/xrafinha998/Sintax/issues"
-
-# Scripts repetidos
-[project.scripts]
-sintax = "sintax.cli:main"
-
-# Pacotes repetidos
-[tool.setuptools.packages.find]
-where   = ["."]
-include = ["sintax*"]
-exclude = ["examples*", "tests*"]
-
-# Arquivos extras repetidos
-[tool.setuptools.package-data]
-"sintax" = ["stdlib/*.stx", "examples/*.stx"]
