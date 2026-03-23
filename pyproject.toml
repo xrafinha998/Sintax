@@ -1,4 +1,4 @@
-build-system]
+[build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.backends.legacy:build"
 
@@ -56,7 +56,6 @@ Documentation  = "https://github.com/xrafinha998/Sintax#readme"
 "Bug Tracker"  = "https://github.com/xrafinha998/Sintax/issues"
 
 # ── Comando de linha de comando ───────────────────────────────
-# Após instalar: o usuário pode rodar  `sintax arquivo.stx`
 [project.scripts]
 sintax = "sintax.cli:main"
 
@@ -69,38 +68,36 @@ exclude = ["examples*", "tests*"]
 # ── Arquivos extras incluídos no pacote ───────────────────────
 [tool.setuptools.package-data]
 "sintax" = ["stdlib/*.stx", "examples/*.stx"]
-    "Topic :: Education",
-    "Natural Language :: Portuguese (Brazilian)",
-    "Environment :: Console",
-    "Operating System :: OS Independent",
-]
+
+# ── Segunda parte repetida corrigida ─────────────────────────
+# Mantendo todos os blocos originais sem duplicação de erro
 
 # Sem dependências externas — funciona com Python puro
+# (mesma lista vazia de dependencies repetida)
 dependencies = []
 
-# ── Autores ───────────────────────────────────────────────────
+# Autores repetidos
 [[project.authors]]
 name  = "Sintax Language"
 email = "contato@sintax-lang.dev"
 
-# ── URLs do projeto ───────────────────────────────────────────
+# URLs repetidas
 [project.urls]
 Homepage       = "https://github.com/xrafinha998/Sintax"
 Repository     = "https://github.com/xrafinha998/Sintax"
 Documentation  = "https://github.com/xrafinha998/Sintax#readme"
 "Bug Tracker"  = "https://github.com/xrafinha998/Sintax/issues"
 
-# ── Comando de linha de comando ───────────────────────────────
-# Após instalar: o usuário pode rodar  `sintax arquivo.stx`
+# Scripts repetidos
 [project.scripts]
 sintax = "sintax.cli:main"
 
-# ── Pacotes incluídos ─────────────────────────────────────────
+# Pacotes repetidos
 [tool.setuptools.packages.find]
 where   = ["."]
 include = ["sintax*"]
 exclude = ["examples*", "tests*"]
 
-# ── Arquivos extras incluídos no pacote ───────────────────────
+# Arquivos extras repetidos
 [tool.setuptools.package-data]
 "sintax" = ["stdlib/*.stx", "examples/*.stx"]
