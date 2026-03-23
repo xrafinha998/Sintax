@@ -9,6 +9,11 @@
 ![licença](https://img.shields.io/badge/licença-MIT-green)
 
 </div>
+![licença](https://img.shields.io/badge/licença-MIT-green)
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT — veja o arquivo [LICENSE](LICENSE) para detalhes.
 
 ---
 
