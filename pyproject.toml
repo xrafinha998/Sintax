@@ -1,4 +1,4 @@
-[build-system]
+build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.backends.legacy:build"
 
@@ -50,10 +50,45 @@ email = "contato@sintax-lang.dev"
 
 # ── URLs do projeto ───────────────────────────────────────────
 [project.urls]
-Homepage       = "https://github.com/seu-usuario/Sintax"
-Repository     = "https://github.com/seu-usuario/Sintax"
-Documentation  = "https://github.com/seu-usuario/Sintax#readme"
-"Bug Tracker"  = "https://github.com/seu-usuario/Sintax/issues"
+Homepage       = "https://github.com/xrafinha998/Sintax"
+Repository     = "https://github.com/xrafinha998/Sintax"
+Documentation  = "https://github.com/xrafinha998/Sintax#readme"
+"Bug Tracker"  = "https://github.com/xrafinha998/Sintax/issues"
+
+# ── Comando de linha de comando ───────────────────────────────
+# Após instalar: o usuário pode rodar  `sintax arquivo.stx`
+[project.scripts]
+sintax = "sintax.cli:main"
+
+# ── Pacotes incluídos ─────────────────────────────────────────
+[tool.setuptools.packages.find]
+where   = ["."]
+include = ["sintax*"]
+exclude = ["examples*", "tests*"]
+
+# ── Arquivos extras incluídos no pacote ───────────────────────
+[tool.setuptools.package-data]
+"sintax" = ["stdlib/*.stx", "examples/*.stx"]
+    "Topic :: Education",
+    "Natural Language :: Portuguese (Brazilian)",
+    "Environment :: Console",
+    "Operating System :: OS Independent",
+]
+
+# Sem dependências externas — funciona com Python puro
+dependencies = []
+
+# ── Autores ───────────────────────────────────────────────────
+[[project.authors]]
+name  = "Sintax Language"
+email = "contato@sintax-lang.dev"
+
+# ── URLs do projeto ───────────────────────────────────────────
+[project.urls]
+Homepage       = "https://github.com/xrafinha998/Sintax"
+Repository     = "https://github.com/xrafinha998/Sintax"
+Documentation  = "https://github.com/xrafinha998/Sintax#readme"
+"Bug Tracker"  = "https://github.com/xrafinha998/Sintax/issues"
 
 # ── Comando de linha de comando ───────────────────────────────
 # Após instalar: o usuário pode rodar  `sintax arquivo.stx`
