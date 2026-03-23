@@ -1,14 +1,14 @@
 [build-system]
 requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 # ── Metadados do pacote ───────────────────────────────────────
 [project]
-name            = "sintax-lang"
-version         = "4.0.0"
-description     = "Linguagem de programação em Português — mais simples que Python"
-readme          = "README.md"
-license         = { file = "LICENSE" }
+name = "sintax-lang"
+version = "4.0.0"
+description = "Linguagem de programação em Português — mais simples que Python"
+readme = "README.md"
+license = { file = "LICENSE" }
 requires-python = ">=3.7"
 
 keywords = [
@@ -35,6 +35,41 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Interpreters",
     "Topic :: Education",
+    "Natural Language :: Portuguese (Brazilian)",
+    "Environment :: Console",
+    "Operating System :: OS Independent",
+]
+
+dependencies = []
+
+# ── Autores ───────────────────────────────────────────────────
+[[project.authors]]
+name = "Sintax Language"
+email = "contato@sintax-lang.dev"
+
+# ── URLs do projeto ───────────────────────────────────────────
+[project.urls]
+Homepage = "https://github.com/xrafinha998/Sintax"
+Repository = "https://github.com/xrafinha998/Sintax"
+Documentation = "https://github.com/xrafinha998/Sintax#readme"
+"Bug Tracker" = "https://github.com/xrafinha998/Sintax/issues"
+
+# ── Comando de linha de comando ───────────────────────────────
+[project.scripts]
+sintax = "sintax.cli:main"
+
+# ── Pacotes incluídos ─────────────────────────────────────────
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sintax*"]
+exclude = ["examples*", "tests*"]
+
+# ── Arquivos extras incluídos no pacote ───────────────────────
+[tool.setuptools.package-data]
+sintax = ["stdlib/*.stx", "examples/*.stx"]    "Topic :: Education",
     "Natural Language :: Portuguese (Brazilian)",
     "Environment :: Console",
     "Operating System :: OS Independent",
