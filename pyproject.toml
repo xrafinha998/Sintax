@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 # ── Metadados do pacote ───────────────────────────────────────
 [project]
-name = "sintax-lang"
+name = "sintaxe"
 version = "4.0.0"
 description = "Linguagem de programação em Português — mais simples que Python"
 readme = "README.md"
