@@ -71,4 +71,41 @@ __all__ = [
     "executar",
     "executar_arquivo",
     "__version__",
+        ]        SyntaxError: Erro léxico ou de sintaxe
+        RuntimeError: Erro em tempo de execução
+    """
+    tokens = Lexer(codigo, arquivo).tokenizar()
+    ast    = Parser(tokens).parse()
+    interp = Interpreter()
+    interp.rodar(ast)
+    return interp
+
+
+def executar_arquivo(caminho: str) -> Interpreter:
+    """
+    Executa um arquivo .stx.
+
+    Args:
+        caminho: Caminho para o arquivo .stx
+
+    Returns:
+        O Interpreter após a execução
+
+    Raises:
+        FileNotFoundError: Arquivo não encontrado
+        SyntaxError: Erro léxico ou de sintaxe
+        RuntimeError: Erro em tempo de execução
+    """
+    with open(caminho, encoding="utf-8") as f:
+        codigo = f.read()
+    return executar(codigo, caminho)
+
+
+__all__ = [
+    "Interpreter",
+    "Lexer",
+    "Parser",
+    "executar",
+    "executar_arquivo",
+    "__version__",
 ]
