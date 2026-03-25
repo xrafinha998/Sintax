@@ -1,14 +1,14 @@
 [build-system]
 requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
+build-backend = "setuptools.backends.legacy:build"
 
 # ── Metadados do pacote ───────────────────────────────────────
 [project]
-name = "sintaxe"
-version = "4.0.0"
-description = "Linguagem de programação em Português — mais simples que Python"
-readme = "README.md"
-license = { file = "LICENSE" }
+name            = "sintaxe"
+version         = "4.2.0"
+description     = "Linguagem de programação em Português — mais simples que Python"
+readme          = "README.md"
+license         = { file = "LICENSE" }
 requires-python = ">=3.7"
 
 keywords = [
@@ -18,7 +18,7 @@ keywords = [
     "interpretador",
     "language",
     "interpreter",
-    "educational"
+    "educational",
 ]
 
 classifiers = [
@@ -37,39 +37,35 @@ classifiers = [
     "Topic :: Education",
     "Natural Language :: Portuguese (Brazilian)",
     "Environment :: Console",
-    "Operating System :: OS Independent"
+    "Operating System :: OS Independent",
 ]
 
+# Sem dependências externas — funciona com Python puro
 dependencies = []
 
 # ── Autores ───────────────────────────────────────────────────
 [[project.authors]]
-name = "Sintax Language"
+name  = "Sintax Language"
 email = "contato@sintax-lang.dev"
 
 # ── URLs do projeto ───────────────────────────────────────────
 [project.urls]
-Homepage = "https://github.com/xrafinha998/Sintax"
-Repository = "https://github.com/xrafinha998/Sintax"
-Documentation = "https://github.com/xrafinha998/Sintax#readme"
-"Bug Tracker" = "https://github.com/xrafinha998/Sintax/issues"
+Homepage       = "https://github.com/seu-usuario/Sintax"
+Repository     = "https://github.com/seu-usuario/Sintax"
+Documentation  = "https://github.com/seu-usuario/Sintax#readme"
+"Bug Tracker"  = "https://github.com/seu-usuario/Sintax/issues"
 
 # ── Comando de linha de comando ───────────────────────────────
+# Após instalar: o usuário pode rodar  `sintax arquivo.stx`
 [project.scripts]
 sintax = "sintax.cli:main"
 
 # ── Pacotes incluídos ─────────────────────────────────────────
-[tool.setuptools]
-include-package-data = true
-
 [tool.setuptools.packages.find]
-where = ["."]
+where   = ["."]
 include = ["sintax*"]
 exclude = ["examples*", "tests*"]
 
 # ── Arquivos extras incluídos no pacote ───────────────────────
 [tool.setuptools.package-data]
-sintax = [
-    "stdlib/*.stx",
-    "examples/*.stx"
-]
+"sintax" = ["stdlib/*.stx", "examples/*.stx"]
